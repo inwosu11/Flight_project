@@ -1,3 +1,13 @@
++--------------+
+|     Main     |
++--------------+
+| - main: String[] |
+| - mainController: MainController |
+| - UserId: int |
++--------------+
+| + start(primaryStage: Stage): void |
++--------------+
+
 package application;
 	
 import java.net.URL;
