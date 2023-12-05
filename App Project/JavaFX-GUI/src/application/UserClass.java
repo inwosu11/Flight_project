@@ -1,3 +1,44 @@
++-------------------+
+|    UserClass     |
++-------------------+
+| - userID: int     |
+| - firstName: String |
+| - lastName: String  |
+| - address: String  |
+| - zip: String      |
+| - state: String    |
+| - username: String |
+| - password: String |
+| - email: String    |
+| - SSN: String      |
+| - securityAnswer: String |
++-------------------+
+| + UserClass()           |
+| + UserClass(userID: int, firstName: String, lastName: String, address: String, zip: String, state: String, username: String, password: String, email: String, SSN: String, securityAnswer: String) |
+| + getFirstName(): String |
+| + setFirstName(firstName: String): void |
+| + getLastName(): String |
+| + setLastName(lastName: String): void |
+| + getAddress(): String |
+| + setAddress(address: String): void |
+| + getZip(): String |
+| + setZip(zip: String): void |
+| + getState(): String |
+| + setState(state: String): void |
+| + getUsername(): String |
+| + setUsername(username: String): void |
+| + getPassword(): String |
+| + setPassword(password: String): void |
+| + getEmail(): String |
+| + setEmail(email: String): void |
+| + getSSN(): String |
+| + setSSN(SSN: String): void |
+| + getSecurityAnswer(): String |
+| + setSecurityAnswer(securityAnswer: String): void |
+| + getUserID(): int |
+| + setUserID(userID: int): void |
++-------------------+
+
 package application;
 
 public class UserClass {
