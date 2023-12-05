@@ -1,3 +1,28 @@
++----------------+
+|     Flights    |
++----------------+
+| - flightID: String |
+| - from: String   |
+| - to: String     |
+| - departure: String |
+| - arrival: String |
+| - seats: String  |
++----------------+
+| + Flights(String, String, String, String, String, String) |
+| + getFlightID(): String |
+| + setFlightID(String): void |
+| + getFrom(): String |
+| + setFrom(String): void |
+| + getTo(): String |
+| + setTo(String): void |
+| + getDeparture(): String |
+| + setDeparture(String): void |
+| + getArrival(): String |
+| + setArrival(String): void |
+| + getSeats(): String |
+| + setSeats(String): void |
++----------------+
+
 package application;
 
 import javafx.application.Application;
