@@ -29,7 +29,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.*;
 import javafx.util.Callback;
 
-public class MainController{
+public class MainController extends Main{
 
 	
 	//User Data
@@ -45,7 +45,8 @@ public class MainController{
 	@FXML private TextField securityTextField;
 	
 	Connection conn = SQLConnection.getConnection();
-
+	
+	
 	
 
 //--------------------------------Start of Menu Bar Items--------------------------------------------
@@ -93,12 +94,16 @@ public class MainController{
 	
 	//Goes to Flights Scene
 		public void goToFlights(ActionEvent event) throws IOException {
-			Parent root = FXMLLoader.load(getClass().getResource("FlightsScene.fxml"));
-			stage = (Stage) MenuBar.getScene().getWindow();		
-			stage.setTitle("Available Flights");
-			scene = new Scene(root);
-			stage.setScene(scene);
-			stage.show();
+			if (UserId != 0) {
+				Parent root = FXMLLoader.load(getClass().getResource("FlightsScene.fxml"));
+				stage = (Stage) MenuBar.getScene().getWindow();		
+				stage.setTitle("Available Flights");
+				scene = new Scene(root);
+				stage.setScene(scene);
+				stage.show();
+			}
+			else 
+				NoAccountPopup.display("Error");
 		}
 		
 	//Goes to User Info Scene
@@ -129,7 +134,7 @@ public class MainController{
 		
 	// Logs out of Account
 		public void logout() {
-			int userID = -1;
+			 UserId = 0;
 			
 			
 		}
@@ -140,105 +145,32 @@ public class MainController{
 		stage.close();
 	}
 	
+	// Gets User Id
+		public int getUserId() {
+		    int userID = 0;
+		    String query = "SELECT ID FROM [dbo].[CurrentUser]";
+		    try (CallableStatement statement = conn.prepareCall(query)) {
+		        // Execute the query
+		        try (ResultSet resultSet = statement.executeQuery()) {
+		            // Check if there is a result
+		            if (resultSet.next()) {
+		                // Retrieve the ID from the result set
+		                userID = resultSet.getInt("ID");
+		            }
+		        }
+		    } catch (Exception e) {
+		        System.out.println(e);
+		    } finally {
+		        System.out.println("getUserID completed: " + userID);
+		        return userID;
+		    }
+		}
+
 		
 //--------------------------------End of Menu Bar Items--------------------------------------------
 		
-////--------------------------------Page Buttons-----------------------------------------------------
-//		//Create User
-//				public void createUser() {
-//					String firstName = firstNameTextField.getText();
-//					String lastName = lastNameTextField.getText();
-//					String address = addressTextField.getText();
-//					String zipCode = zipCodeTextField.getText();
-//					String state = stateTextField.getText();
-//					String username = usernameTextField.getText();
-//					String password = passwordTextField.getText();
-//					String email = emailTextField.getText();
-//					String SSN = ssnTextField.getText();
-//					String security = securityTextField.getText();
-//					try {
-//						Connection conn = getConnection();
-//						PreparedStatement statement = conn.prepareStatement(
-//								"insert into [dbo].[users] (FirstName, LastName, Address, "
-//								+ "Zip, State, Username, Password, Email, SSN, SecurityAnswer) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-//						statement.setString(1, firstName);
-//						statement.setString(2, lastName);
-//						statement.setString(3, address);
-//						statement.setString(4, zipCode);
-//						statement.setString(5, state);
-//						statement.setString(6, username);
-//						statement.setString(7, password);
-//						statement.setString(8, email);
-//						statement.setString(9, SSN);
-//						statement.setString(10, security);
-//						
-//						statement.execute();
-//						
-//						loginMethod();
-//						
-//						conn.close();
-//
-//					} catch(Exception e) {System.out.println(e);}
-//					finally {
-//						System.out.println("Insert Completed");
-//						
-//					}
-//						
-//				}
+//--------------------------------Page Buttons-----------------------------------------------------
 
-			// Login method
-				public void loginMethod() {
-					   String username = usernameTextField.getText();
-					   String password = passwordTextField.getText();
-					    
-					   try {
-					       Connection conn = SQLConnection.getConnection();
-					       String query = "{CALL loginMethod2 (?, ?, ?)}";
-					       String query2 ="{Call RetrieveID2 (?, ?, ?)}";
-					 
-					       try (CallableStatement statement = conn.prepareCall(query)) {
-					           statement.setString(1, username);
-					           statement.setString(2, password);
-					           statement.registerOutParameter(3, Types.NVARCHAR);
-					 
-					           statement.execute();
-					 
-					           Boolean authenticationResult = statement.getBoolean(3);
-					           if (authenticationResult) {
-					        	   try(CallableStatement statement2 =conn.prepareCall(query2)) {
-					        		   statement2.setString(1, username);
-							           statement2.setString(2, password);
-							           statement2.registerOutParameter(3, Types.NVARCHAR);
-							           
-							           statement2.execute();
-							           int userID = statement2.getInt(3);
-					        	   }
-					        	   Parent root = FXMLLoader.load(getClass().getResource("FlightsScene.fxml"));
-					        	   stage = (Stage) MenuBar.getScene().getWindow();
-					        	   stage.setTitle("Available Flights");
-					        	   scene = new Scene(root);
-					        	   stage.setScene(scene);
-					        	   stage.show();
-								
-					           }
-					           else {
-					        	   Parent root = FXMLLoader.load(getClass().getResource("RegisterScene.fxml"));
-					        	   stage = (Stage) MenuBar.getScene().getWindow();
-					        	   stage.setTitle("Register Account");
-					        	   scene = new Scene(root);
-					        	   stage.setScene(scene);
-					        	   stage.show();
-					        	   
-					           }			        	   
-					        	   
-					        }
-					    } catch (Exception e) {
-					        e.printStackTrace();
-					    } finally {
-					        System.out.println("Login check completed");
-					    }
-					}
-				
 			// Find user
 				public void searchUsers() {
 //					String username = firstNameTextField.getText();
@@ -247,19 +179,8 @@ public class MainController{
 //					
 				}
 				
-			// Asks security question
-				public void forgotPassword(ActionEvent event) throws IOException {
-					Stage security = new Stage();
-					security.initModality(Modality.APPLICATION_MODAL);
-					security.setTitle("Forgot Password");
-					
-					Parent root = FXMLLoader.load(getClass().getResource("SecurityBoxScene.fxml"));
-					scene = new Scene(root);
-					security.setScene(scene);
-					security.showAndWait();
-					
-				}
-			
+
+							
 			// Gets Password
 				public void getPassword() {
 				    String username = usernameTextField.getText();

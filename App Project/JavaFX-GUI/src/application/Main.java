@@ -23,6 +23,9 @@ public class Main extends Application {
 		launch(args);
 	}
 	
+	static MainController main = new MainController();;
+	static int UserId = main.getUserId();
+		
 	@Override
 	public void start(Stage primaryStage) {
 		try {

@@ -5,6 +5,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.sql.Connection;
 import java.sql.CallableStatement;
@@ -30,9 +31,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class FlightsController implements Initializable{
+public class FlightsController extends MainController implements Initializable {
 	
 	private Stage stage;
 	private Scene scene;
@@ -48,17 +50,17 @@ public class FlightsController implements Initializable{
 	@FXML private TableColumn<Flights, String> columnDeparture;
 	@FXML private TableColumn<Flights, String> columnArrival;
 	@FXML private TableColumn<Flights, String> columnSeatsAvailable;
-	@FXML private TableColumn<Flights, Button> actionColumn;
 	
 	
 	
 	// Flight Data
-	@FXML private TextField flightIDTextField;
-	@FXML private TextField fromTextField;
-	@FXML private TextField toTextField;
-	@FXML private TextField departureTextField;
-	@FXML private TextField arrivalTextField;
-	@FXML private TextField seatsTextField;
+	@FXML
+	protected TextField flightIDTextField;
+	@FXML protected TextField fromTextField;
+	@FXML protected TextField toTextField;
+	@FXML protected TextField departureTextField;
+	@FXML protected TextField arrivalTextField;
+	@FXML protected TextField seatsTextField;
 	
 	ObservableList<Flights> listM;
 	
@@ -67,10 +69,6 @@ public class FlightsController implements Initializable{
 	Connection conn = null;
 	ResultSet rs = null;
 	PreparedStatement pst = null;
-
-	LoginController userId = new LoginController();
-
-
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb){
@@ -81,42 +79,12 @@ public class FlightsController implements Initializable{
 		columnDeparture.setCellValueFactory(new PropertyValueFactory<Flights, String>("departure"));
 		columnArrival.setCellValueFactory(new PropertyValueFactory<Flights, String>("arrival"));
 		columnSeatsAvailable.setCellValueFactory(new PropertyValueFactory<Flights, String>("seats"));
-		actionColumn.setCellValueFactory(new PropertyValueFactory<Flights, Button>("button"));
 		
 		listM = FlightsConnect.getDataFlights();
-		FlightTable.setItems(listM);
+		FlightTable.setItems(listM);		
+	}
 
-		
-		
-//		for (int i = 0; i < button.length; i++) {
-//	        button[i] = new Button("Button " + i);
-//	        int buttonIndex = i;
-//	        button[i].setOnAction(event -> handleButtonAction(event, buttonIndex));
-//	    }
-//		
-//	}
-//		private void handleButtonAction(ActionEvent event, int buttonIndex) {
-//		    System.out.println("Button " + buttonIndex + " clicked!");
-		}
-	
-
-//        public void FlightIdHandler(ActionEvent event) {
-//            // Get the selected row
-//            Flights selectedFlight = FlightTable.getSelectionModel().getSelectedItem();
-//
-//            // Check if a row is selected
-//            if (selectedFlight != null) {
-//                String flightId = selectedFlight.getFlightID();
-//                System.out.println("Selected Flight ID: " + flightId);
-//                // Do something with the flight ID
-//            } else {
-//                System.out.println("No row selected");
-//            }
-//        }
-  
-
-
-	    public void FlightIdHandler(ActionEvent event) {
+	    public void FlightIdHandler(ActionEvent event) throws IOException {
 	        // Get the selected row
 	        Flights selectedFlight = FlightTable.getSelectionModel().getSelectedItem();
 
@@ -125,36 +93,114 @@ public class FlightsController implements Initializable{
 	            String flightId = selectedFlight.getFlightID();
 	            System.out.println("Selected Flight ID: " + flightId);
 
-	            int userID = userId.loginMethod();
+	            int userID = getUserId();
 	            int flightIdInt = Integer.parseInt(flightId);
 
 	            bookFlightProcedure(userID, flightIdInt);
+	    	
 	            
 	        } else {
 	            System.out.println("No row selected");
 	        }
+	        
 	    }
 
-	    private void bookFlightProcedure(int userID, int flightId) {
+	    private void bookFlightProcedure(int userID, int flightId) throws IOException {
 	    	
 	        try (Connection conn = SQLConnection.getConnection()) {
-	            // Create a CallableStatement for the stored procedure
-	            try (CallableStatement cs = conn.prepareCall("{call BookFlight(?, ?)}")) {
-	            	userID = userId.loginMethod();
-	                cs.setInt(2, flightId);
+	        	
+	        	String query = ("{Call BookFlight (?, ?)");
+	        	try (CallableStatement statement = conn.prepareCall(query)) {
+	        		statement.setInt(1, userID);
+	        		statement.setInt(2, flightId);
+	        		statement.execute();
+	        		conn.close();
+	        	} catch (Exception e){
+	        		
+	        	}
 
-	                // Execute the stored procedure
-	                cs.execute();
+//	            String sql = 
+//	                "DECLARE @userId INT = ?; " +
+//	                "DECLARE @flightId INT = ?; " +
+//	                "IF NOT EXISTS (" +
+//	                    "SELECT 1 " +
+//	                    "FROM Bookings " +
+//	                    "WHERE ID = @userId " +
+//	                    "    AND FlightID = @flightId " +
+//	                ") " +
+//	                "BEGIN " +
+//	                    "IF NOT EXISTS (" +
+//	                        "SELECT 1 " +
+//	                        "FROM Bookings AS b " +
+//	                        "JOIN Flights AS f ON b.FlightID = f.FlightID " +
+//	                        "WHERE b.ID = @userId " +
+//	                        "    AND f.DepartureDate = ?" +
+//	                        "    AND f.DepartureTime BETWEEN ?" +
+//	                    ") " +
+//	                    "BEGIN " +
+//	                        "IF ((SELECT SeatsAvailable FROM Flights WHERE FlightID = @flightId) > 0) " +
+//	                        "BEGIN " +
+//	                             "UPDATE Flights " +
+//	                             "SET SeatsAvailable = SeatsAvailable - 1 " +
+//	                             "WHERE FlightID = @flightId; " +
+//	                             "INSERT INTO Bookings (ID, FlightID, BookingDate) " +
+//	                             "VALUES (@userId, @flightId, GETDATE()); " +
+//	                             "PRINT 'Booking successful'; " +
+//	                        "END " +
+//	                        "ELSE " +
+//	                        "BEGIN " +
+//	                             "PRINT 'Sorry, the flight is already full'; " +
+//	                        "END; " +
+//	                    "END " +
+//	                    "ELSE " +
+//	                    "BEGIN " +
+//	                        "PRINT 'Conflict: You already have a booking for this date and time'; " +
+//	                    "END; " +
+//	                "END " +
+//	                "ELSE " +
+//	                "BEGIN " +
+//	                    "PRINT 'You have already booked this flight'; " +
+//	                "END;";
+	   
+//	             try (PreparedStatement statement =  conn.prepareStatement(query)) {
+//	                // Set the parameters
+//	                statement.setInt(1, userID);
+//	                statement.setInt(2, flightId);
+	   
+	                // Execute the SQL statement
+//	                statement.execute();
+	                
+					Parent root = FXMLLoader.load(getClass().getResource("FlightsScene.fxml"));
+					stage = (Stage) MenuBar.getScene().getWindow();		
+					stage.setTitle("Available Flights");
+					scene = new Scene(root);
+					stage.setScene(scene);
+					stage.show();
+	                
+	             
+	   
+	             // Display all bookings for testing purposes
+//	            String selectQuery = "SELECT * FROM [dbo].[Bookings]";
+//	             try (PreparedStatement selectStatement = conn.prepareStatement(selectQuery)) {
+//	                ResultSet resultSet = selectStatement.executeQuery();
+//	                while (resultSet.next()) {
+//	                    System.out.println("Booking ID: " + resultSet.getInt("BookingID"));
+//	                    System.out.println("Customer ID: " + resultSet.getInt("ID"));
+//	                    System.out.println("Flight ID: " + resultSet.getInt("FlightID"));
+//	                    System.out.println("Booking Date: " + resultSet.getTimestamp("BookingDate"));
+//	                    System.out.println("---------------");
+//	                }
+//	             }
+//	   
+	             // Close the connection
+//	            conn.close();
+	         } catch (Exception e) {
+	            e.printStackTrace();
+	         }
+}
 
-	                // Check the output parameter (if any)
-	                // For example, you can retrieve an output parameter like this:
-	                // int outputValue = cs.getInt(3); // assuming the output parameter is at index 3
-	            }
-	        } catch (Exception e) {
-	            e.printStackTrace(); // Handle the exception appropriately
-	        }
-	    }
-	
+	     
+//	
 
 	
 	// Search Criteria
@@ -177,7 +223,6 @@ public class FlightsController implements Initializable{
 	    try {
 	        Connection conn = SQLConnection.getConnection();
 
-	        // Construct the SQL query based on conditions
 	        String query = "SELECT FlightID, DepartureCity, ArrivalCity, DepartureDate, ArrivalDate, SeatsAvailable " +
 	                       "FROM [dbo].[Flights] " +
 	                       "WHERE 1=1 ";
@@ -192,8 +237,25 @@ public class FlightsController implements Initializable{
 	            from = fromTest;
 	        }
 
-	        // Repeat the same pattern for other conditions
-
+	        if (!toTest.isEmpty()) {
+	            query += " AND ArrivalCity = ?";
+	            from = fromTest;
+	        }
+	        
+	        if (!departureTest.isEmpty()) {
+	            query += " AND DepartureDate = ?";
+	            from = fromTest;
+	        }
+	        
+	        if (!arrivalTest.isEmpty()) {
+	            query += " AND ArrivalDate = ?";
+	            from = fromTest;
+	        }
+	        
+	        if (!seatsTest.isEmpty()) {
+	            query += " AND SeatsAvailable = ?";
+	            from = fromTest;
+	        }
 	        PreparedStatement statement = conn.prepareStatement(query);
 
 	        // Set parameters based on conditions
@@ -206,12 +268,25 @@ public class FlightsController implements Initializable{
 	            statement.setString(parameterIndex++, fromTest);
 	        }
 
-	        // Repeat the same pattern for other conditions
+	        if (!toTest.isEmpty()) {
+	            statement.setString(parameterIndex++, toTest);
+	        }
+	        
+	        if (!departureTest.isEmpty()) {
+	            statement.setString(parameterIndex++, departureTest);
+	        }
+	        
+	        if (!arrivalTest.isEmpty()) {
+	            statement.setString(parameterIndex++, arrivalTest);
+	        }
+	        
+	        if (!seatsTest.isEmpty()) {
+	            statement.setString(parameterIndex++, seatsTest);
+	        }
 
 	        ResultSet resultSet = statement.executeQuery();
 
 	        while (resultSet.next()) {
-	            // Create a Flights object for each row in the result set
 	            Flights flight = new Flights(
 	                    resultSet.getString("FlightID"),
 	                    resultSet.getString("DepartureCity"),
@@ -234,94 +309,5 @@ public class FlightsController implements Initializable{
 	        FlightTable.setItems(resultList);
 	    }
 	}
-
-			
-	
-	//Goes to Main Menu Scene
-	public void goToMainMenu(ActionEvent event) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("MainScene.fxml"));
-		stage = (Stage) MenuBar.getScene().getWindow();
-		stage.setTitle("Main Menu");
-		scene = new Scene(root);
-		stage.setScene(scene);
-		stage.show();
-	
-}
-
-
-//Goes to Login Scene
-	public void goToLogin(ActionEvent event) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
-		stage = (Stage) MenuBar.getScene().getWindow();	
-		stage.setTitle("Login");
-		scene = new Scene(root);
-		stage.setScene(scene);
-		stage.show();
-	
-}
-
-//Goes to Register Scene
-	public void goToRegister(ActionEvent event) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("RegisterScene.fxml"));
-		stage = (Stage) MenuBar.getScene().getWindow();	
-		stage.setTitle("Register Account");
-		scene = new Scene(root);
-		stage.setScene(scene);
-		stage.show();
-	}
-
-//Goes to Flights Scene
-	public void goToFlights(ActionEvent event) throws IOException {
-		LoginController userID = new LoginController();
-		if (userID.loginMethod() != 0) {
-		Parent root = FXMLLoader.load(getClass().getResource("FlightsScene.fxml"));
-		stage = (Stage) MenuBar.getScene().getWindow();		
-		stage.setTitle("Available Flights");
-		scene = new Scene(root);
-		stage.setScene(scene);
-		stage.show();
-		}
-	}
-	
-//Goes to User Info Scene
-	public void goToUserInfo(ActionEvent event) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("UserInfoScene.fxml"));
-		stage = (Stage) MenuBar.getScene().getWindow();	
-		stage.setTitle("Account Information");
-		scene = new Scene(root);
-		stage.setScene(scene);
-		stage.show();
-	}
-
-//Goes to Booked Flights Scene
-	public void goToBookedFlights(ActionEvent event) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("BookedFlightsScene.fxml"));
-		stage = (Stage) MenuBar.getScene().getWindow();	
-		stage.setTitle("Your Flights");
-		scene = new Scene(root);
-		stage.setScene(scene);
-		stage.show();
-	}
-	
-	// Deletes User Account
-	public void deleteAccount() {
-		
-		
-	}
-	
-// Logs out of Account
-	public void logout() {
-		
-		
-		
-	}
-	
-// Closes the window
-	public void close(ActionEvent event) {
-	stage = (Stage) MenuBar.getScene().getWindow();
-	stage.close();
-}
-
-
 
 }

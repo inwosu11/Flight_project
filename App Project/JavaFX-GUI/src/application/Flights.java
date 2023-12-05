@@ -18,8 +18,7 @@ public class Flights {
 	private String departure;
 	private String arrival;
 	private String seats;
-	private int buttonValue;
-//	private Button button;
+
 	
 	public Flights(String flightID, String from, String to, String departure, String arrival, String seats) {
 		this.flightID = flightID;
@@ -28,26 +27,9 @@ public class Flights {
 		this.departure = departure;
 		this.arrival = arrival;
 		this.seats = seats;
-		this.buttonValue = buttonValue;
-//		this.button = new Button("Add Flight");
+
 		
 	}
-
-	public int getButtonValue() {
-		return buttonValue;
-	}
-
-	public void setButtonValue(int buttonValue) {
-		this.buttonValue = buttonValue;
-	}
-
-//	public Button getButton() {
-//		return button;
-//	}
-//
-//	public void setButton(Button button) {
-//		this.button = button;
-//	}
 
 	public String getFlightID() {
 		return flightID;
