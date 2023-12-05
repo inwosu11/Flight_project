@@ -1,3 +1,12 @@
++----------UML DIAGRAM-----------+
+|   BookedFlightsConnect   |
++--------------------------+
+|                          |
+| - UserId: int             |
++--------------------------+
+| + getBookedFlights(): ObservableList<Flights> |
++--------------------------+
+
 package application;
 
 import java.sql.Connection;
