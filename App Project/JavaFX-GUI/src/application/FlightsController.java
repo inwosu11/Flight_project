@@ -1,3 +1,33 @@
++---------------------+
+|  FlightsController  |
++---------------------+
+| - stage: Stage      |
+| - scene: Scene      |
+| - root: Parent      |
+| + MenuBar: MenuBar  |
+| + FlightTable: TableView<Flights> |
+| + columnFlight: TableColumn<Flights, String> |
+| + columnFrom: TableColumn<Flights, String> |
+| + columnTo: TableColumn<Flights, String> |
+| + columnDeparture: TableColumn<Flights, String> |
+| + columnArrival: TableColumn<Flights, String> |
+| + columnSeatsAvailable: TableColumn<Flights, String> |
+| + flightIDTextField: TextField |
+| + fromTextField: TextField |
+| + toTextField: TextField |
+| + departureTextField: TextField |
+| + arrivalTextField: TextField |
+| + seatsTextField: TextField |
+| - listM: ObservableList<Flights> |
+| - index: int        |
+| - conn: Connection  |
+| - rs: ResultSet     |
+| - pst: PreparedStatement |
++---------------------+
+| + initialize(url: URL, rb: ResourceBundle): void |
+| + FlightIdHandler(event: ActionEvent): void |
+| + bookFlightProcedure(userID: int, flightId: int): void |
+| + searchCriteria(): void |
 package application;
 
 import java.io.IOException;
