@@ -1,3 +1,25 @@
++-----------------UML DIAGRAM-----------------+
+|            BookFlightsController      |
++---------------------------------------+
+| - UserFlightsTable: TableView<Flights> |
+| - columnFlight: TableColumn<Flights, String> |
+| - columnFrom: TableColumn<Flights, String> |
+| - columnTo: TableColumn<Flights, String> |
+| - columnDeparture: TableColumn<Flights, String> |
+| - columnArrival: TableColumn<Flights, String> |
+| - columnSeatsAvailable: TableColumn<Flights, String> |
+| - listN: ObservableList<Flights>       |
+| - index: int                           |
+| - conn: Connection                     |
+| - rs: ResultSet                        |
+| - pst: PreparedStatement              |
++---------------------------------------+
+| + initialize()                        |
+| + deleteFlight(ActionEvent event)    |
+| + deleteFlightProcedure(int userID, int flightIdInt) |
+| + searchCriteria()                     |
++---------------------------------------+
+
 package application;
 
 import java.io.IOException;
