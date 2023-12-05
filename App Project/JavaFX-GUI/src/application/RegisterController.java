@@ -1,3 +1,13 @@
++--------------------------+
+|   RegisterController    |
++--------------------------+
+| - stage: Stage           |
+| - scene: Scene           |
+| - root: Parent           |
+| + MenuBar: MenuBar       |
++--------------------------+
+| + createUser(): void     |
++--------------------------+
 package application;
 
 import java.io.IOException;
