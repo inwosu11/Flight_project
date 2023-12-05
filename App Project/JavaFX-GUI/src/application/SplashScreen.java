@@ -1,3 +1,13 @@
++-----------------------+
+|    SplashScreen       |
++-----------------------+
+| - parent: StackPane   |
+| - splash: Stage       |
+| - scene: Scene        |
++-----------------------+
+| + init(): void        |
+| + start(stage: Stage): void |
++-----------------------+
 package application;
 
 
