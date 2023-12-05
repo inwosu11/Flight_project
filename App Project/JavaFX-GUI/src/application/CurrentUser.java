@@ -1,3 +1,22 @@
++-------UML-------+
+|    CurrentUser  |
++-----------------+
+| - userID: int    |
+| - firstName: String |
+| - lastName: String |
+| - address: String |
+| - zip: String     |
+| - state: String   |
+| - username: String|
+| - password: String|
+| - email: String   |
+| - SSN: String     |
+| - securityAnswer: String|
++-----------------+
+| + CurrentUser()  |
+| + CurrentUser(int, String, String, String, String, String, String, String, String, String, String) |
++-----------------+
+
 package application;
 
 public class CurrentUser extends UserClass {
