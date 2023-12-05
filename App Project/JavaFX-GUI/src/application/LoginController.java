@@ -1,3 +1,17 @@
++-------------------+
+|  LoginController  |
++-------------------+
+| - stage: Stage    |
+| - scene: Scene    |
+| - root: Parent    |
+| + MenuBar: MenuBar |
+| + usernameTextField: TextField |
+| + passwordTextField: TextField |
+| - user: CurrentUser |
++-------------------+
+| + loginMethod(): void |
+| + forgotPassword(event: ActionEvent): void |
+
 package application;
 
 import java.io.IOException;
