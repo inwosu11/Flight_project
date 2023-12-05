@@ -1,3 +1,11 @@
++------------------------+
+|    SQLConnection       |
++------------------------+
+|                        |
++------------------------+
+| + getConnection(): Connection |
++------------------------+
+
 package application;
 
 import java.sql.Connection;
