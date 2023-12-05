@@ -1,3 +1,27 @@
++---------------------------------------+
+|             MainController            |
++---------------------------------------+
+| - conn: Connection                    |
++---------------------------------------+
+| - stage: Stage                        |
+| - scene: Scene                        |
+| - root: Parent                        |
++---------------------------------------+
+| - goToMainMenu()                      |
+| - goToLogin()                         |
+| - goToRegister()                      |
+| - goToFlights()                       |
+| - goToUserInfo()                      |
+| - goToBookedFlights()                 |
+| - deleteAccount()                     |
+| - logout()                            |
+| - close()                             |
+| - getUserId() : int                    |
+| - searchUsers()                       |
+| - getPassword()                       |
++---------------------------------------+
+
+
 package application;
 
 import java.io.IOException;
