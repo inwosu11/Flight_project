@@ -1,3 +1,10 @@
++------------------------+
+|    PasswordPopup       |
++------------------------+
+| - window: Stage        |
++------------------------+
+| + display(String, String): void |
++------------------------+
 package application;
 
 import javafx.application.Application;
