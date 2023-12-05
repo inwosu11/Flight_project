@@ -1,3 +1,12 @@
++----------------------+
+|      AlertBox        |
++----------------------+
+| - window: Stage      |
++----------------------+
+| + display(title, message) |
++----------------------+
+
+
 package GUI;
 
 import javafx.application.Application;
