@@ -1,3 +1,12 @@
++---------------------+
+|    NumOfFlights     |
++---------------------+
+| - conn: Connection  |
++---------------------+
+| + numOfFlights(): int|
++---------------------+
+
+
 package application;
 
 import java.sql.Connection;
