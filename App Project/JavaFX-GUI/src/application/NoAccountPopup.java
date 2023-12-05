@@ -1,3 +1,12 @@
++---------------------+
+|  NoAccountPopup     |
++---------------------+
+| - window: Stage     |
++---------------------+
+| + display(title: String): void |
++---------------------+
+
+
 package application;
 
 import javafx.geometry.Pos;
