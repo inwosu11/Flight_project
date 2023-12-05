@@ -1,3 +1,12 @@
++-----------------+
+|  FlightsConnect  |
++-----------------+
+| - conn: Connection |
++-----------------+
+| + getDataFlights(): ObservableList<Flights> |
+| + getBookedFlights(): ObservableList<Flights> |
++-----------------+
+
 package application;
 
 import java.sql.Connection;
